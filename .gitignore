@@ -15,3 +15,8 @@ hs_err_pid*
 *.iml
 .idea
 dependency-reduced-pom.xml
+
+# ignore output and temp directories
+output
+temp
+

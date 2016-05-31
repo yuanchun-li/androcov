@@ -8,5 +8,7 @@ public class Main {
         }
 
         Util.LOGGER.info("OK let's start!");
+        Instrumenter.configSoot();
+        Instrumenter.instrument();
     }
 }

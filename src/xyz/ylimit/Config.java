@@ -20,19 +20,24 @@ public class Config {
     // Directory for result output
     public static String outputDir = "output";
 
+    public static String forceAndroidJarPath = "";
+
     private static PrintStream resultPs;
 
     public static boolean parseArgs(String[] args) {
         Options options = new Options();
-        Option output = Option.builder("o").argName("directory").required()
+        Option output_opt = Option.builder("o").argName("directory").required()
                 .longOpt("output").hasArg().desc("path to output dir").build();
-        Option input = Option.builder("i").argName("APK").required()
+        Option input_opt = Option.builder("i").argName("APK").required()
                 .longOpt("input").hasArg().desc("path to target APK").build();
+        Option sdk_opt = Option.builder("sdk").argName("android.jar").required()
+                .longOpt("android_jar").hasArg().desc("path to android.jar").build();
         Option help_opt = Option.builder("h").desc("print this help message")
                 .longOpt("help").build();
 
-        options.addOption(output);
-        options.addOption(input);
+        options.addOption(output_opt);
+        options.addOption(input_opt);
+        options.addOption(sdk_opt);
         options.addOption(help_opt);
 
         CommandLineParser parser = new DefaultParser();
@@ -41,7 +46,7 @@ public class Config {
             CommandLine cmd = parser.parse(options, args);
 
             if (cmd.hasOption("i")) {
-                Config.inputAPK = cmd.getOptionValue("i");
+                Config.inputAPK = cmd.getOptionValue('i');
                 File codeDirFile = new File(Config.inputAPK);
                 if (!codeDirFile.exists()) {
                     throw new ParseException("Target APK does not exist.");
@@ -53,6 +58,13 @@ public class Config {
                 Config.outputDir = workingDir.getPath();
                 if (!workingDir.exists() && !workingDir.mkdirs()) {
                     throw new ParseException("Error generating output directory.");
+                }
+            }
+            if (cmd.hasOption("sdk")) {
+                Config.forceAndroidJarPath = cmd.getOptionValue("sdk");
+                File androidJarFile = new File(Config.forceAndroidJarPath);
+                if (!androidJarFile.exists()) {
+                    throw new ParseException("android.jar does not exist.");
                 }
             }
             if (cmd.hasOption("h")) {
