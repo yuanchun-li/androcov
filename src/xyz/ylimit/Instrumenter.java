@@ -41,12 +41,12 @@ public class Instrumenter {
 
             @Override
             protected void internalTransform(final Body b, String phaseName, @SuppressWarnings("rawtypes") Map options) {
-                final PatchingChain units = b.getUnits();
-                //important to use snapshotIterator here
-                String methodSig = b.getMethod().getSignature();
-                String logStr = String.format("Instrumenting: %s", methodSig);
-                Util.LOGGER.info(logStr);
-                // TODO perform instrumentation here
+            final PatchingChain units = b.getUnits();
+            //important to use snapshotIterator here
+            String methodSig = b.getMethod().getSignature();
+            String logStr = String.format("Instrumenting: %s", methodSig);
+            Util.LOGGER.info(logStr);
+            // TODO perform instrumentation here
             }
         }));
         PackManager.v().runPacks();
