@@ -1,13 +1,9 @@
-package xyz.ylimit;
+package xyz.ylimit.androcov;
 
 import soot.*;
-import soot.jimple.AbstractStmtSwitch;
-import soot.jimple.InvokeStmt;
 import soot.options.Options;
-import soot.util.Chain;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +24,12 @@ public class Instrumenter {
 
         List<String> process_dirs = new ArrayList<>();
         process_dirs.add(Config.inputAPK);
+        Instrumenter.class.getClass().getResource("");
+
+        process_dirs.add("/home/liyc/temp/java_sample");
         Options.v().set_process_dir(process_dirs);
         Options.v().set_force_android_jar(Config.forceAndroidJarPath);
+        Options.v().set_force_overwrite(true);
     }
 
     public static void instrument() {

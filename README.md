@@ -1,7 +1,7 @@
 # androcov
 Instrument an Android app to measure the test coverage.
 
-Take method coverage as an example, the steps to measure the method coverage of dyn. analysis is as follows:
+Take method coverage as an example, the steps to measure the method coverage of dyn. analysis are as follows:
 
 1. Analyze the app and get a list of all methods in the app.
 2. Instrument the app to print log messages when it reaches a method.

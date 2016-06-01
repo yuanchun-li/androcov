@@ -1,4 +1,4 @@
-package xyz.ylimit;
+package xyz.ylimit.androcov;
 
 public class Main {
 

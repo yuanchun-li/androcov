@@ -38,6 +38,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
     <build>
+        <resources>
+            <resource>
+                <directory>res</directory>
+            </resource>
+        </resources>
         <sourceDirectory>src</sourceDirectory>
         <plugins>
             <plugin>
@@ -62,7 +67,7 @@
                     <archive>
                         <manifest>
                             <mainClass>
-                                xyz.ylimit.Main
+                                xyz.ylimit.androcov.Main
                             </mainClass>
                         </manifest>
                     </archive>

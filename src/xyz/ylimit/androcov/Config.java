@@ -1,4 +1,4 @@
-package xyz.ylimit;
+package xyz.ylimit.androcov;
 
 /**
  * Created by LiYC on 2015/7/18.
@@ -88,13 +88,13 @@ public class Config {
         try {
             FileHandler fh = new FileHandler(logFile.getAbsolutePath());
             fh.setFormatter(new SimpleFormatter());
-            Util.LOGGER.addHandler(fh);
+            xyz.ylimit.androcov.Util.LOGGER.addHandler(fh);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        Util.LOGGER.info("finish parsing arguments");
-        Util.LOGGER.info(String.format("[inputAPK]%s, [outputDir]%s", Config.inputAPK, Config.outputDir));
+        xyz.ylimit.androcov.Util.LOGGER.info("finish parsing arguments");
+        xyz.ylimit.androcov.Util.LOGGER.info(String.format("[inputAPK]%s, [outputDir]%s", Config.inputAPK, Config.outputDir));
         return true;
     }
 }
