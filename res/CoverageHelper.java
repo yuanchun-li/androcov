@@ -11,20 +11,24 @@ public class CoverageHelper {
     private static final boolean logEveryReach = true;
 
     public static void reach(String pointName) {
-        if (!reachedCounts.containsKey(pointName)) {
-            reachedCounts.put(pointName, 1);
-            String logMessage = String.format("[androcov] reach 1: %s", pointName);
-            System.out.println(logMessage);
-        }
-        else {
-            Integer count = reachedCounts.get(pointName);
-            count += 1;
-            reachedCounts.put(pointName, count);
-
-            if (logEveryReach) {
-                String logMessage = String.format("[androcov] reach %d: %s", count, pointName);
+        try {
+            if (!reachedCounts.containsKey(pointName)) {
+                reachedCounts.put(pointName, 1);
+                String logMessage = String.format("[androcov] reach 1: %s", pointName);
                 System.out.println(logMessage);
+            } else {
+                Integer count = reachedCounts.get(pointName);
+                count += 1;
+                reachedCounts.put(pointName, count);
+
+                if (logEveryReach) {
+                    String logMessage = String.format("[androcov] reach %d: %s", count, pointName);
+                    System.out.println(logMessage);
+                }
             }
+        }
+        catch (Exception e) {
+            // Ignore any exception
         }
     }
 }

@@ -5,6 +5,8 @@ package xyz.ylimit.androcov;
  * Package: DERG
  */
 import org.apache.commons.cli.*;
+import org.apache.commons.io.FileUtils;
+import org.jf.util.StringUtils;
 
 import java.io.*;
 import java.util.Comparator;
@@ -18,7 +20,9 @@ public class Config {
     public static String inputAPK = "";
 
     // Directory for result output
-    public static String outputDir = "output";
+    public static String outputDirPath = "output";
+    public static String tempDirPath = "output/temp";
+    public static String outputAPKPath = "";
 
     public static String forceAndroidJarPath = "";
 
@@ -53,11 +57,23 @@ public class Config {
                 }
             }
             if (cmd.hasOption('o')) {
-                Config.outputDir = cmd.getOptionValue('o');
-                File workingDir = new File(Config.outputDir);
-                Config.outputDir = workingDir.getPath();
-                if (!workingDir.exists() && !workingDir.mkdirs()) {
+                Config.outputDirPath = cmd.getOptionValue('o');
+                File outputDir = new File(Config.outputDirPath);
+                Config.outputDirPath = outputDir.getAbsolutePath();
+                Config.tempDirPath = String.format("%s/temp", Config.outputDirPath);
+                if (!outputDir.exists() && !outputDir.mkdirs()) {
                     throw new ParseException("Error generating output directory.");
+                }
+                File tempDir = new File(Config.tempDirPath);
+                if (tempDir.exists()) {
+                    try {
+                        FileUtils.forceDelete(tempDir);
+                    } catch (IOException e) {
+                        throw new ParseException("Error deleting temp directory.");
+                    }
+                }
+                if (!tempDir.mkdirs()) {
+                    throw new ParseException("Error generating temp directory.");
                 }
             }
             if (cmd.hasOption("sdk")) {
@@ -83,7 +99,7 @@ public class Config {
             return false;
         }
 
-        File logFile = new File(String.format("%s/androcov.log", Config.outputDir));
+        File logFile = new File(String.format("%s/androcov.log", Config.outputDirPath));
 
         try {
             FileHandler fh = new FileHandler(logFile.getAbsolutePath());
@@ -93,8 +109,12 @@ public class Config {
             e.printStackTrace();
         }
 
+        // get output APK name
+        String apkName = new File(inputAPK).getName();
+        Config.outputAPKPath = String.format("%s/%s", Config.outputDirPath, apkName);
+
         xyz.ylimit.androcov.Util.LOGGER.info("finish parsing arguments");
-        xyz.ylimit.androcov.Util.LOGGER.info(String.format("[inputAPK]%s, [outputDir]%s", Config.inputAPK, Config.outputDir));
+        xyz.ylimit.androcov.Util.LOGGER.info(String.format("[inputAPK]%s, [outputDir]%s", Config.inputAPK, Config.outputDirPath));
         return true;
     }
 }
