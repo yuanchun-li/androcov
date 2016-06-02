@@ -1,5 +1,7 @@
 package xyz.ylimit.androcov;
 
+import java.io.IOException;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -8,7 +10,11 @@ public class Main {
         }
 
         Util.LOGGER.info("OK let's start!");
-        Instrumenter.configSoot();
-        Instrumenter.instrument();
+        try {
+            Instrumenter.configSoot();
+            Instrumenter.instrument();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
