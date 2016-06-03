@@ -19,4 +19,4 @@ dependency-reduced-pom.xml
 # ignore output and temp directories
 output
 temp
-
+target
