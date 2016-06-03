@@ -20,9 +20,10 @@ public class Config {
     public static String inputAPK = "";
 
     // Directory for result output
-    public static String outputDirPath = "output";
-    public static String tempDirPath = "output/temp";
+    public static String outputDirPath = "";
+    public static String tempDirPath = "";
     public static String outputAPKPath = "";
+    public static String outputResultPath = "";
 
     public static String forceAndroidJarPath = "";
 
@@ -61,6 +62,8 @@ public class Config {
                 File outputDir = new File(Config.outputDirPath);
                 Config.outputDirPath = outputDir.getAbsolutePath();
                 Config.tempDirPath = String.format("%s/temp", Config.outputDirPath);
+                Config.outputResultPath = String.format("%s/instrumentation.json", Config.outputDirPath);
+
                 if (!outputDir.exists() && !outputDir.mkdirs()) {
                     throw new ParseException("Error generating output directory.");
                 }

@@ -13,6 +13,7 @@ public class Main {
         try {
             Instrumenter.configSoot();
             Instrumenter.instrument();
+            Instrumenter.output();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,6 +1,7 @@
 package xyz.ylimit.androcov;
 
 import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.internal.JIdentityStmt;
@@ -9,16 +10,15 @@ import soot.options.Options;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by yuanchun on 5/31/16.
  * Package: androcov
  */
 public class Instrumenter {
+    private static HashSet<String> allMethods = new HashSet<>();
+
     public static void configSoot() throws IOException {
 //        Options.v().set_prepend_classpath(true);
         Options.v().set_allow_phantom_refs(true);
@@ -51,31 +51,31 @@ public class Instrumenter {
         Util.LOGGER.info("Start instrumenting...");
 
         Scene.v().loadNecessaryClasses();
-        final SootMethod reachMethod = Scene.v().getSootClass("xyz.ylimit.androcov.CoverageHelper").getMethodByName("reach");
+        final SootClass helperClass = Scene.v().getSootClass("xyz.ylimit.androcov.CoverageHelper");
+        final SootMethod helperMethod = helperClass.getMethodByName("reach");
 
         PackManager.v().getPack("jtp").add(new Transform("jtp.androcov", new BodyTransformer() {
             @Override
             protected void internalTransform(final Body b, String phaseName, @SuppressWarnings("rawtypes") Map options) {
                 final PatchingChain units = b.getUnits();
                 // important to use snapshotIterator here
-                if (b.getMethod() == reachMethod) return;
+                if (b.getMethod().getDeclaringClass() == helperClass) return;
                 String methodSig = b.getMethod().getSignature();
-                // String logStr = String.format("Instrumenting: %s", methodSig);
-                // Util.LOGGER.info(logStr);
-                // perform instrumentation here
+                allMethods.add(methodSig);
 
+                // perform instrumentation here
                 for(Iterator iter = units.snapshotIterator(); iter.hasNext();) {
                     final Unit u = (Unit) iter.next();
 //                    // insert before return statements
 //                    if (u instanceof ReturnStmt || u instanceof RetStmt || u instanceof ReturnVoidStmt) {
 //                        InvokeStmt logStatement = Jimple.v().newInvokeStmt(
-//                                Jimple.v().newStaticInvokeExpr(reachMethod.makeRef(), StringConstant.v(methodSig)));
+//                                Jimple.v().newStaticInvokeExpr(helperMethod.makeRef(), StringConstant.v(methodSig)));
 //                        units.insertBefore(logStatement, u);
 //                    }
                     // insert before the first non-identity statement
                     if (!(u instanceof JIdentityStmt)) {
                         InvokeStmt logStatement = Jimple.v().newInvokeStmt(
-                                Jimple.v().newStaticInvokeExpr(reachMethod.makeRef(), StringConstant.v(methodSig)));
+                                Jimple.v().newStaticInvokeExpr(helperMethod.makeRef(), StringConstant.v(methodSig)));
                         units.insertBefore(logStatement, u);
                         break;
                     }
@@ -93,6 +93,19 @@ public class Instrumenter {
         }
         else {
             Util.LOGGER.warning("error instrumenting");
+        }
+    }
+
+    public static void output() {
+        HashMap<String, Object> outputMap = new HashMap<>();
+        outputMap.put("outputAPK", Config.outputAPKPath);
+        outputMap.put("allMethods", allMethods);
+        File instrumentResultFile = new File(Config.outputResultPath);
+        JSONObject resultJson = new JSONObject(outputMap);
+        try {
+            FileUtils.writeStringToFile(instrumentResultFile, resultJson.toString(2), "UTF-8");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

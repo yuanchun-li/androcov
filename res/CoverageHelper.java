@@ -8,7 +8,7 @@ import java.util.HashMap;
  */
 public class CoverageHelper {
     private static HashMap<String, Integer> reachedCounts = new HashMap<String, Integer>();
-    private static final boolean logEveryReach = true;
+    private static final boolean logEveryReach = false;
 
     public static void reach(String pointName) {
         try {
@@ -16,15 +16,14 @@ public class CoverageHelper {
                 reachedCounts.put(pointName, 1);
                 String logMessage = String.format("[androcov] reach 1: %s", pointName);
                 System.out.println(logMessage);
-            } else {
+            }
+            else if (logEveryReach) {
                 Integer count = reachedCounts.get(pointName);
                 count += 1;
                 reachedCounts.put(pointName, count);
 
-                if (logEveryReach) {
-                    String logMessage = String.format("[androcov] reach %d: %s", count, pointName);
-                    System.out.println(logMessage);
-                }
+                String logMessage = String.format("[androcov] reach %d: %s", count, pointName);
+                System.out.println(logMessage);
             }
         }
         catch (Exception e) {
